@@ -1,0 +1,12 @@
+from django.urls import path  # type: ignore
+
+from dj_rest_auth.jwt_auth import get_refresh_view  # type: ignore
+from dj_rest_auth.registration.views import RegisterView  # type: ignore
+from dj_rest_auth.views import LoginView, LogoutView, UserDetailsView  # type: ignore
+from rest_framework_simplejwt.views import TokenVerifyView  # type: ignore
+
+urlpatterns = [
+    path('register/', RegisterView.as_view(), name='rest_register'),
+    path('login/', LoginView.as_view(), name='rest_login'),
+    path('logout/', LogoutView.as_view(), name='rest_logout'),
+]
