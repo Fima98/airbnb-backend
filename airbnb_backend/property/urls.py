@@ -6,4 +6,5 @@ from . import api
 urlpatterns = [
     path('', api.properies_list, name='properties_list'),
     path('create/', api.create_property, name='create_property'),
+    path('<uuid:pk>/', api.properties_detail, name='properties_detail'),
 ]

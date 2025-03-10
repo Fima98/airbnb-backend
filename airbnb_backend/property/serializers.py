@@ -1,6 +1,7 @@
 from rest_framework import serializers  # type: ignore
 
 from .models import Property
+from useraccount.serializers import UserDetailSerializer
 
 
 class PropertiesListSerializer(serializers.ModelSerializer):
@@ -10,5 +11,26 @@ class PropertiesListSerializer(serializers.ModelSerializer):
             'id',
             'title',
             'price_per_night',
+            'image_url',
+        )
+
+
+class PropertiesDetailSerializer(serializers.ModelSerializer):
+    host = UserDetailSerializer(read_only=True, many=False)
+
+    class Meta:
+        model = Property
+        fields = (
+            'id',
+            'title',
+            'description',
+            'host',
+            'price_per_night',
+            'bedrooms',
+            'bathrooms',
+            'guests',
+            'country',
+            'country_code',
+            'category',
             'image_url',
         )
