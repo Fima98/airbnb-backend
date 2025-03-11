@@ -18,9 +18,10 @@ python manage.py makemigrations property
 echo "Застосування міграцій у правильному порядку..."
 python manage.py migrate useraccount
 python manage.py migrate property
-python manage.py migrate --fake-initial 
+python manage.py migrate --fake-initial
 
 # python manage.py makemigrations
 # python manage.py migrate
 
-exec "$@"
+"$@" & 
+wait 
