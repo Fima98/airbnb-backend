@@ -13,7 +13,7 @@ from .forms import PropertyForm
 def properies_list(request):
     properties = Property.objects.all()
     serializer = PropertiesListSerializer(properties, many=True)
-    return JsonResponse({"data": serializer.data})
+    return JsonResponse(serializer.data, safe=False)
 
 
 @api_view(['GET'])
@@ -32,9 +32,9 @@ def create_property(request):
         property = form.save(commit=False)
         property.host = request.user
         property.save()
-        return JsonResponse({"status": "success", "data": PropertiesListSerializer(property).data})
+        return JsonResponse({"success": True, "data": PropertiesListSerializer(property).data})
     print("Error", form.errors, form.non_field_errors)
-    return JsonResponse({"Errors": form.errors.as_json()}, status=400)
+    return JsonResponse({"success": False, "errors": form.errors.as_json()}, status=400)
 
 
 @api_view(['POST'])
@@ -58,6 +58,6 @@ def book_property(request, pk):
             created_by=request.user,
         )
 
-        return JsonResponse({"status": "success"}, status=201)
+        return JsonResponse({"success": True}, status=201)
     except Exception as e:
-        return JsonResponse({"status": "error", "message": str(e)}, status=400)
+        return JsonResponse({"success": False, "message": str(e)}, status=400)
