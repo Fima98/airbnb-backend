@@ -54,42 +54,62 @@ def book_property(request, pk):
     try:
         start_date_str = request.POST.get("start_date")
         end_date_str = request.POST.get("end_date")
-        number_of_nights = request.POST.get("number_of_nights")
-        total_price = request.POST.get("total_price")
-        guests = request.POST.get("guests")
+        guests_str = request.POST.get("guests")
 
         if not start_date_str or not end_date_str:
-            return JsonResponse({"success": False, "message": "Start date and end date are required."}, status=400)
+            return JsonResponse(
+                {"success": False, "message": "Start date and end date are required."},
+                status=400
+            )
 
         start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
         end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
 
         if start_date >= end_date:
-            return JsonResponse({"success": False, "message": "End date must be after start date."}, status=400)
+            return JsonResponse(
+                {"success": False, "message": "End date must be after start date."},
+                status=400
+            )
 
-        property = Property.objects.get(pk=pk)
+        property_obj = Property.objects.get(pk=pk)
 
         overlapping_reservations = Reservation.objects.filter(
-            property=property,
+            property=property_obj,
             start_date__lte=end_date,
             end_date__gte=start_date
         )
         if overlapping_reservations.exists():
-            return JsonResponse({
-                "success": False,
-                "message": "The property is already reserved for the selected dates."
-            }, status=400)
+            return JsonResponse(
+                {"success": False, "message": "The property is already reserved for the selected dates."},
+                status=400
+            )
+
+        nights = (end_date - start_date).days
+        base_price = nights * property_obj.price_per_night
+        fee = base_price * 0.05
+        total_price = base_price + fee
+
+        guests = int(guests_str) if guests_str else 1
 
         Reservation.objects.create(
-            property=property,
+            property=property_obj,
             start_date=start_date,
             end_date=end_date,
-            number_of_nights=number_of_nights,
+            number_of_nights=nights,
             total_price=total_price,
             guests=guests,
             created_by=request.user,
         )
 
-        return JsonResponse({"success": True}, status=201)
+        return JsonResponse({
+            "success": True,
+            "message": "Reservation created successfully.",
+            "data": {
+                "nights": nights,
+                "base_price": base_price,
+                "fee": fee,
+                "total_price": total_price
+            }
+        }, status=201)
     except Exception as e:
         return JsonResponse({"success": False, "message": str(e)}, status=400)
