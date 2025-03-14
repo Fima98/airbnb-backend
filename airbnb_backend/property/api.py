@@ -13,6 +13,12 @@ from .forms import PropertyForm
 @permission_classes([])
 def properies_list(request):
     properties = Property.objects.all()
+
+    host_id = request.GET.get("host", None)
+
+    if host_id:
+        properties = properties.filter(host_id=host_id)
+
     serializer = PropertiesListSerializer(properties, many=True)
     return JsonResponse(serializer.data, safe=False)
 
