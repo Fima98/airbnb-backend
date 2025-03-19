@@ -56,7 +56,7 @@ def create_property(request):
 
 
 @api_view(['POST'])
-def book_property(request, pk):
+def reserve_property(request, pk):
     try:
         start_date_str = request.POST.get("start_date")
         end_date_str = request.POST.get("end_date")
