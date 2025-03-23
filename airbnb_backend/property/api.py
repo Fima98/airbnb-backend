@@ -16,6 +16,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 def properies_list(request):
     properties = Property.objects.all()
     host_id = request.GET.get("host", None)
+    is_favorite = request.GET.get("is_favorites", None)
     favorites = []
 
     try:
@@ -28,6 +29,9 @@ def properies_list(request):
 
     if host_id:
         properties = properties.filter(host_id=host_id)
+
+    if is_favorite:
+        properties = properties.filter(favorited__in=[user])
 
     if user:
         for property in properties:
