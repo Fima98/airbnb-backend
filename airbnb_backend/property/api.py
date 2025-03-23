@@ -6,6 +6,8 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from .models import Property, Reservation
 from .serializers import PropertiesListSerializer, PropertiesDetailSerializer, ReservationListSerializer
 from .forms import PropertyForm
+from useraccount.models import User
+from rest_framework_simplejwt.tokens import AccessToken
 
 
 @api_view(['GET'])
@@ -13,14 +15,27 @@ from .forms import PropertyForm
 @permission_classes([])
 def properies_list(request):
     properties = Property.objects.all()
-
     host_id = request.GET.get("host", None)
+    favorites = []
+
+    try:
+        token = request.META.get("HTTP_AUTHORIZATION").split(" ")[1]
+        token = AccessToken(token)
+        user_id = token.payload.get("user_id")
+        user = User.objects.get(pk=user_id)
+    except Exception as e:
+        user = None
 
     if host_id:
         properties = properties.filter(host_id=host_id)
 
+    if user:
+        for property in properties:
+            if user in property.favorited.all():
+                favorites.append(property.id)
+
     serializer = PropertiesListSerializer(properties, many=True)
-    return JsonResponse(serializer.data, safe=False)
+    return JsonResponse({'data': serializer.data, 'favorites': favorites})
 
 
 @api_view(['GET'])
@@ -119,3 +134,16 @@ def reserve_property(request, pk):
         }, status=201)
     except Exception as e:
         return JsonResponse({"success": False, "message": str(e)}, status=400)
+
+
+@api_view(['POST'])
+def toggle_favorite(request, pk):
+    property = Property.objects.get(pk=pk)
+    user = request.user
+
+    if user in property.favorited.all():
+        property.favorited.remove(user)
+        return JsonResponse({"success": True, "is_favorite": False})
+    else:
+        property.favorited.add(user)
+        return JsonResponse({"success": True, "is_favorite": True})
