@@ -18,6 +18,13 @@ APPEND_SLASH = False
 SITE_ID = 1
 WEBSITE_URL = 'http://localhost:8000'
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+    }
+}
+
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
@@ -82,6 +89,7 @@ LOGGING = {
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -104,6 +112,7 @@ INSTALLED_APPS = [
 
     'useraccount',
     'property',
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -138,6 +147,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'airbnb_backend.wsgi.application'
+ASGI_APPLICATION = 'airbnb_backend.asgi.application'
 
 
 # Database
