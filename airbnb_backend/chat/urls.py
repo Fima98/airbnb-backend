@@ -3,5 +3,6 @@ from . import api
 
 urlpatterns = [
     path('', api.chat_list, name='chat_list'),
-    path('<uuid:pk>/', api.chat_detail, name='chat_detail')
+    path('start/<uuid:user_id>/', api.create_chat, name='create_chat'),
+    path('<uuid:pk>/', api.chat_detail, name='chat_detail'),
 ]
