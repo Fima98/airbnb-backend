@@ -16,7 +16,7 @@ class Chat(models.Model):
 class ChatMessage(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     chat = models.ForeignKey(
-        Chat, on_delete=models.CASCADE, related_name='conversations')
+        Chat, on_delete=models.CASCADE, related_name='messages')
     sent_to = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='received_messages')
     sent_by = models.ForeignKey(
