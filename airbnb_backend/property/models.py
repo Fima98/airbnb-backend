@@ -3,7 +3,8 @@ import uuid
 from django.conf import settings  # type: ignore
 from django.db import models  # type: ignore
 
-from useraccount.models import User
+# from useraccount.models import User
+from django.conf import settings
 
 
 class Property(models.Model):
@@ -20,11 +21,11 @@ class Property(models.Model):
     country_code = models.CharField(max_length=10)
     category = models.CharField(max_length=255)
     favorited = models.ManyToManyField(
-        User, related_name='favorites', blank=True)
+        settings.AUTH_USER_MODEL, related_name='favorites', blank=True)
 
     image = models.ImageField(upload_to='uploads/properties/')
     host = models.ForeignKey(
-        User, related_name='properties', on_delete=models.CASCADE)
+        settings.AUTH_USER_MODEL, related_name='properties', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -44,6 +45,6 @@ class Reservation(models.Model):
     guests = models.IntegerField(default=1)
     total_price = models.FloatField()
     created_by = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="reservations_created"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reservations_created"
     )
     created_at = models.DateTimeField(auto_now_add=True)

@@ -29,8 +29,9 @@ class CustomUserManager(UserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
-    name = models.CharField(max_length=255, null=True)
-    avatar = models.ImageField(upload_to='uploads/avatars/')
+    name = models.CharField(max_length=255, null=False, blank=False)
+    avatar = models.ImageField(
+        upload_to='uploads/avatars/', null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
@@ -39,7 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)
     reservations = models.ManyToManyField(
-        'property.Property', related_name='user_reservations')
+        'property.Property', related_name='user_reservations', blank=True)
 
     objects = CustomUserManager()
 

@@ -81,6 +81,10 @@ def reserve_property(request, pk):
         end_date_str = request.POST.get("end_date")
         guests_str = request.POST.get("guests")
 
+        print("INFOooooooo", start_date_str, end_date_str, guests_str)
+
+        print(start_date_str, end_date_str, guests_str)
+
         if not start_date_str or not end_date_str:
             return JsonResponse(
                 {"success": False, "message": "Start date and end date are required."},

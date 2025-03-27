@@ -72,6 +72,10 @@ REST_AUTH = {
     "JWT_AUTH_HTTPONLY": False
 }
 
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'useraccount.serializers.CustomRegisterSerializer',
+}
+
 
 LOGGING = {
     'version': 1,
