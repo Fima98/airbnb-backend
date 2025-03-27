@@ -13,10 +13,17 @@ from rest_framework_simplejwt.tokens import AccessToken
 @api_view(['GET'])
 @authentication_classes([])
 @permission_classes([])
-def properies_list(request):
+def properties_list(request):  # перейменовано з properies_list
     properties = Property.objects.all()
     host_id = request.GET.get("host", None)
     is_favorite = request.GET.get("is_favorites", None)
+
+    country = request.GET.get("country", None)
+    category = request.GET.get("category", None)
+    check_in = request.GET.get("check_in", None)
+    check_out = request.GET.get("check_out", None)
+    guests = request.GET.get("guests", None)
+
     favorites = []
 
     try:
@@ -32,6 +39,28 @@ def properies_list(request):
 
     if is_favorite:
         properties = properties.filter(favorited__in=[user])
+
+    if guests:
+        properties = properties.filter(guests__gte=guests)
+
+    if country:
+        properties = properties.filter(country_code=country)
+
+    if category:
+        properties = properties.filter(category=category)
+
+    if check_in and check_out:
+        exect_matches = Reservation.objects.filter(
+            start_date=check_in) | Reservation.objects.filter(end_date=check_in)
+
+        overlap_matches = Reservation.objects.filter(
+            start_date__lte=check_out, end_date__gte=check_in)
+        all_matches = []
+
+        for match in exect_matches | overlap_matches:
+            all_matches.append(match.property_id)
+
+        properties = properties.exclude(id__in=all_matches)
 
     if user:
         for property in properties:
