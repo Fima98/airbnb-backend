@@ -48,3 +48,6 @@ class Reservation(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reservations_created"
     )
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Reservation for {self.property.title} by {self.created_by.email}"

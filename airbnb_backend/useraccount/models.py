@@ -39,8 +39,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)
-    reservations = models.ManyToManyField(
-        'property.Property', related_name='user_reservations', blank=True)
 
     objects = CustomUserManager()
 

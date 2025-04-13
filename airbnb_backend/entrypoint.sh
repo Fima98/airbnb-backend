@@ -11,19 +11,19 @@ then
     echo "The database is up and running :-D"
 fi
 
-echo "Створення міграцій для всіх додатків..."
-python manage.py makemigrations useraccount
-python manage.py makemigrations property
-python manage.py makemigrations chat
+# echo "Створення міграцій для всіх додатків..."
+# python manage.py makemigrations useraccount
+# python manage.py makemigrations property
+# python manage.py makemigrations chat
 
-echo "Застосування міграцій у правильному порядку..."
-python manage.py migrate useraccount
-python manage.py migrate property
-python manage.py migrate chat
-python manage.py migrate --fake-initial
+# echo "Застосування міграцій у правильному порядку..."
+# python manage.py migrate useraccount
+# python manage.py migrate property
+# python manage.py migrate chat
+# python manage.py migrate --fake-initial
 
-# python manage.py makemigrations
-# python manage.py migrate
+python manage.py makemigrations
+python manage.py migrate
 
 "$@" & 
 wait 

@@ -13,7 +13,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 @api_view(['GET'])
 @authentication_classes([])
 @permission_classes([])
-def properties_list(request):  # перейменовано з properies_list
+def properties_list(request):
     properties = Property.objects.all()
     host_id = request.GET.get("host", None)
     is_favorite = request.GET.get("is_favorites", None)
